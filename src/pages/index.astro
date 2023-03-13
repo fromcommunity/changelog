@@ -1,0 +1,49 @@
+---
+import { getCollection } from "astro:content";
+
+import BaseHead from "../components/BaseHead.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
+import FormattedDate from "../components/FormattedDate.astro";
+
+const posts = (await getCollection("changelog")).sort(
+  (a, b) => a.data.pubDate.valueOf() - b.data.pubDate.valueOf()
+);
+---
+
+<html lang="en">
+  <head>
+    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+  </head>
+
+  <body class="py-4 bg-white min-h-screen flex flex-col">
+    <div class="max-w-4xl w-full mx-auto px-4">
+      <Header />
+      <main>
+        <section class="max-w-3xl mx-auto">
+          <ul class="divide-y-2">
+            {
+              posts.map((post) => (
+                <li class="space-y-1">
+                  <a
+                    class="text-xl font-medium"
+                    href={`/changelog/${post.slug}/`}
+                  >
+                    {post.data.title}
+                  </a>
+                  <p class="text-gray-700">{post.data.description}</p>
+                  <div>
+                    <FormattedDate date={post.data.pubDate} />
+                  </div>
+                </li>
+              ))
+            }
+          </ul>
+        </section>
+      </main>
+    </div>
+
+    <Footer />
+  </body>
+</html>

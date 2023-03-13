@@ -1,0 +1,20 @@
+---
+import { CollectionEntry, getCollection } from "astro:content";
+import ChangeLog from "../layouts/ChangeLog.astro";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("changelog");
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+type Props = { post: CollectionEntry<"changelog"> };
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+---
+
+<ChangeLog {...post.data}>
+  <Content />
+</ChangeLog>
